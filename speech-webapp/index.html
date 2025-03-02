@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBMP eKatha Generation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            color: #002147;
+        }
+        button {
+            background: #002147;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+        #output {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 20px;
+            background: #e8f0fe;
+            text-align: left;
+            font-size: 18px;
+            min-height: 100px;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body onload="startAssistant()">
+    <div class="container">
+        <img src="https://www.bbmpeaasthi.karnataka.gov.in/Images/bbmp.png" alt="BBMP Logo" class="logo">
+        <h2>BBMP eKatha Generation</h2>
+        <p id="question">Listening for your response...</p>
+        <button onclick="downloadPDF()">📄 Download eKatha PDF</button>
+        <div id="output">Your responses will appear here...</div>
+    </div>
+    <script>
+        let answers = {};
+        let questions = [
+            { key: "Name", text: "What's your name?" },
+            { key: "Address", text: "What's your address?" },
+            { key: "Property ID", text: "What's your property ID?" },
+            { key: "Property Location", text: "Where is your property located?" },
+            { key: "Contact Number", text: "What's your contact number?" }
+        ];
+        let currentQuestionIndex = 0;
+        
+        function startAssistant() {
+            askQuestion();
+        }
+
+        function askQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                document.getElementById("question").innerText = "All responses collected!";
+                return;
+            }
+            let currentQuestion = questions[currentQuestionIndex];
+            document.getElementById("question").innerText = currentQuestion.text;
+            
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+            recognition.start();
+            
+            recognition.onresult = function(event) {
+                let answer = event.results[0][0].transcript;
+                answers[currentQuestion.key] = answer;
+                
+                let formattedText = Object.entries(answers)
+                    .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
+                    .join("<br>");
+                document.getElementById("output").innerHTML = formattedText;
+                
+                currentQuestionIndex++;
+                setTimeout(askQuestion, 1500);
+            };
+        }
+        
+        function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Load BBMP logo
+    const img = new Image();
+    img.src = "bbmp.png"; // Make sure this path is correct
+
+    img.onload = function () {
+        doc.addImage(img, "PNG", 80, 10, 50, 30); // Adjust position and size
+
+        doc.setFont("helvetica", "bold");
+        doc.text("BBMP eKatha Document", 10, 50);
+        doc.setFont("helvetica", "normal");
+
+        let y = 60;
+        Object.entries(answers).forEach(([key, value]) => {
+            doc.text(`${key}: ${value}`, 10, y);
+            y += 10;
+        });
+
+        doc.save("BBMP_eKatha.pdf");
+    };
+}
+
+    </script>
+</body>
+</html>
