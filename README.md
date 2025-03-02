@@ -13,11 +13,18 @@ Webdevolpment
 Directory Structure
 my-app/ ├─ HTML/ ├─ CSS/ │ ├─JS |-Json.js 
 
-Video Walkthrough of the project
-Attach a very short video walkthough of all of the features [ 1 - 3 minutes ]
-
-Video Walkthrough of the codebase
-Attach a very short video walkthough of codebase [ 1 - 5 minutes ]
+Technologies Used*
+1. *Frontend:* HTML, CSS, JavaScript
+2. *Backend:* Not required (Client-side processing)
+3. *Libraries & APIs:*
+   - *Web Speech API* for Speech Recognition
+   - *jsPDF* for PDF Generation
+   - *Google Fonts (Poppins)* for UI enhancement
+   - *CSS Animations* for smooth transitions
+4. *Design & User Interface:*
+   - Responsive layout using CSS Media Queries
+   - BBMP branding with a professional theme
+   - Animated interactions for better user engagement
 
 Features
 - *Voice Assistant:* Users can answer questions verbally without typing.
